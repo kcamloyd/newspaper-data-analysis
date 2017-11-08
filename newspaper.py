@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import psychopg2
 
 DBNAME = "news"
