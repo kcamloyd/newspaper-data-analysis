@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import psychopg2
+from http.server import HTTPServer, BaseHTTPRequestHandler
 
 DBNAME = "news"
 
@@ -58,5 +59,5 @@ def get_error_days():
 
 if __name__ == '__main__':
     server_address = ('', 8000)
-    httpd = HTTPServer(server_address, MessageHandler)
+    httpd = HTTPServer(server_address, ReportGenerator)
     httpd.serve_forever()
