@@ -1,23 +1,20 @@
 #!/usr/bin/env python3
-import psychopg2
+import psycopg2
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
-report = '''<!DOCTYPE html>
-            <html>
-                <head>
-                    <title>Newspaper Analytics Report</title>
-                </head>
-                <body>
-                    <form method="GET">
-                        <button type="submit">Generate Report</button>
-                    </form>
-                </body>
-            </html>'''
+root_page = '''<!DOCTYPE html>
+    <title>Newspaper Analytics Report</title>
+    <form method="GET">
+        <button type="submit">Generate Report</button>
+    </form>
+      <pre>
+          {}
+      </pre>'''
 
 DBNAME = "news"
 
 def get_pop_articles():
-    db = psychopg2.connect(database=DBNAME)
+    db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
     c.execute(
         '''select articles.title, views from articles,
@@ -32,7 +29,7 @@ def get_pop_articles():
     return articles
 
 def get_pop_authors():
-    db = psychopg2.connect(database=DBNAME)
+    db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
     c.execute(
         '''select name, sum(views) from authors, articles,
@@ -50,7 +47,7 @@ def get_pop_authors():
     return authors
 
 def get_error_days():
-    db = psychopg2.connect(database=DBNAME)
+    db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
     c.execute(
         '''select daily_errors.date,
@@ -68,6 +65,41 @@ def get_error_days():
     days = c.fetchall()
     db.close()
     return days
+
+def get_report():
+    art = get_pop_articles()
+    auth = get_pop_authors()
+    err = get_error_days()
+    final = '''<h2>Most Popular Articles</h2>
+        <ol>
+            <li>{} -- {} views</li>
+            <li>{} -- {} views</li>
+            <li>{} -- {} views</li>
+        </ol>
+        <h2>Most Popular Authors</h2>
+        <ol>
+            <li>{} -- {} views</li>
+            <li>{} -- {} views</li>
+            <li>{} -- {} views</li>
+            <li>{} -- {} views</li>
+        </ol>
+        <h2>Days With More Than 1% Error Rate</h2>
+        <ol>
+            <li>{} -- {}% errors</li>
+        </ol>
+        '''.format(art[0][0], art[0][1], art[1][0], art[1][1],
+            art[2][0], art[2][1], auth[0][0], auth[0][1],
+            auth[1][0], auth[1][1], auth[2][0], auth[2][1],
+            auth[3][0], auth[3][1], err[0][0], err[0][1])
+    return final
+
+class ReportGenerator(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('content-type', 'text/html; charset=utf-8')
+        self.end_headers()
+        report = root_page.format(get_report())
+        self.wfile.write(report.encode())
 
 if __name__ == '__main__':
     server_address = ('', 8000)
