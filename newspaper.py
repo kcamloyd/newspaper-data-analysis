@@ -6,7 +6,11 @@ DBNAME = "news"
 def get_pop_articles():
     db = psychopg2.connect(database=DBNAME)
     c = db.cursor()
-    c.execute("select ...")
+    c.execute(
+        '''select articles.title, views from articles,
+        (select path, count(*) as views from log group by path
+        order by views desc) as pathviews where pathviews.path
+        like '%'||articles.slug order by views desc limit 3;''')
     articles = c.fetchall()
     db.close()
     return articles
