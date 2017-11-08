@@ -4,9 +4,6 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 root_page = '''<!DOCTYPE html>
     <title>Newspaper Analytics Report</title>
-    <form method="GET">
-        <button type="submit">Generate Report</button>
-    </form>
       <pre>
           {}
       </pre>'''
