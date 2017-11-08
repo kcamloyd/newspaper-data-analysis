@@ -67,7 +67,7 @@ def get_report():
     art = get_pop_articles()
     auth = get_pop_authors()
     err = get_error_days()
-    final = '''<h2>Most Popular Articles</h2>
+    final = '''<h2>Top 3 Articles</h2>
         <ol>
             <li>{} -- {} views</li>
             <li>{} -- {} views</li>
