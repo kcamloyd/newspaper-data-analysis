@@ -10,6 +10,7 @@ root_page = '''<!DOCTYPE html>
 
 DBNAME = "news"
 
+
 def get_pop_articles():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
@@ -24,6 +25,7 @@ def get_pop_articles():
     articles = c.fetchall()
     db.close()
     return articles
+
 
 def get_pop_authors():
     db = psycopg2.connect(database=DBNAME)
@@ -42,6 +44,7 @@ def get_pop_authors():
     authors = c.fetchall()
     db.close()
     return authors
+
 
 def get_error_days():
     db = psycopg2.connect(database=DBNAME)
@@ -62,6 +65,7 @@ def get_error_days():
     days = c.fetchall()
     db.close()
     return days
+
 
 def get_report():
     art = get_pop_articles()
@@ -84,11 +88,13 @@ def get_report():
         <ol>
             <li>{} -- {}% errors</li>
         </ol>
-        '''.format(art[0][0], art[0][1], art[1][0], art[1][1],
+        '''.format(
+            art[0][0], art[0][1], art[1][0], art[1][1],
             art[2][0], art[2][1], auth[0][0], auth[0][1],
             auth[1][0], auth[1][1], auth[2][0], auth[2][1],
             auth[3][0], auth[3][1], err[0][0], err[0][1])
     return final
+
 
 class ReportGenerator(BaseHTTPRequestHandler):
     def do_GET(self):
