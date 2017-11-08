@@ -2,6 +2,18 @@
 import psychopg2
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
+report = '''<!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Newspaper Analytics Report</title>
+                </head>
+                <body>
+                    <form method="GET">
+                        <button type="submit">Generate Report</button>
+                    </form>
+                </body>
+            </html>'''
+
 DBNAME = "news"
 
 def get_pop_articles():
