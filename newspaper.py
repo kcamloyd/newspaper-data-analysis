@@ -67,4 +67,6 @@ def get_report():
     for date, percent in errors:
         print("- {} -- {}% errors".format(date, percent))
 
-get_report()
+
+if __name__ == "__main__":
+    get_report()
