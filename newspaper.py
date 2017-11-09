@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 import psycopg2
 
-DBNAME = "news"
+
+def get_result_table(query):
+    db = psycopg2.connect(database='news')
+    c = db.cursor()
+    c.execute(query)
+    result = c.fetchall()
+    db.close()
+    return result
 
 
 def get_pop_articles():
-    db = psycopg2.connect(database=DBNAME)
-    c = db.cursor()
-    c.execute(
+    articles = get_result_table(
         '''select articles.title, views from articles,
         (select path, count(*) as views from log
         group by path
@@ -15,15 +20,10 @@ def get_pop_articles():
         where pathviews.path like '%'||articles.slug
         order by views desc
         limit 3;''')
-    articles = c.fetchall()
-    db.close()
-    return articles
 
 
 def get_pop_authors():
-    db = psycopg2.connect(database=DBNAME)
-    c = db.cursor()
-    c.execute(
+    authors = get_result_table(
         '''select name, sum(views) from authors,
         (select articles.title, articles.author, views
         from articles,
@@ -35,15 +35,10 @@ def get_pop_authors():
         where titleviews.author = authors.id
         group by name
         order by sum desc;''')
-    authors = c.fetchall()
-    db.close()
-    return authors
 
 
 def get_error_days():
-    db = psycopg2.connect(database=DBNAME)
-    c = db.cursor()
-    c.execute(
+    days = get_result_table(
         '''select to_char(daily_errors.date, 'FMMonth FMDD, YYYY') as date,
         round(daily_errors.sum / daily_logs.count * 100, 1) as percent
         from (select date(time) as date, count(*)::decimal as sum
@@ -56,9 +51,6 @@ def get_error_days():
         where daily_errors.date = daily_logs.date
         and round(daily_errors.sum / daily_logs.count * 100, 1) > 1
         order by daily_errors.date;''')
-    days = c.fetchall()
-    db.close()
-    return days
 
 
 def get_report():
