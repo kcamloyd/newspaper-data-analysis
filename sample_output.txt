@@ -4,10 +4,10 @@ Top 3 Articles
 - Bad things gone, say good people -- 170098 views
 
 Most Popular Authors
-- Ursula La Multa -- 4742824 views
-- Rudolf von Treppenwitz -- 2371412 views
-- Anonymous Contributor -- 1185706 views
-- Markoff Chaney -- 1185706 views
+- Ursula La Multa -- 507594 views
+- Rudolf von Treppenwitz -- 423457 views
+- Anonymous Contributor -- 170098 views
+- Markoff Chaney -- 84557 views
 
 Days With More Than 1% Error Rate
 - July 17, 2016 -- 2.3% errors
