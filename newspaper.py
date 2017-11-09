@@ -24,14 +24,15 @@ def get_pop_authors():
     db = psycopg2.connect(database=DBNAME)
     c = db.cursor()
     c.execute(
-        '''select name, sum(views) from authors, articles,
-        (select articles.title, views from articles,
+        '''select name, sum(views) from authors,
+        (select articles.title, articles.author, views
+        from articles,
         (select path, count(*) as views from log
         group by path
         order by views desc) as pathviews
         where pathviews.path like '%'||articles.slug
         order by views desc) as titleviews
-        where articles.author = authors.id
+        where titleviews.author = authors.id
         group by name
         order by sum desc;''')
     authors = c.fetchall()
