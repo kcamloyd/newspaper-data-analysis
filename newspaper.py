@@ -12,7 +12,7 @@ def get_result_table(query):
 
 
 def get_pop_articles():
-    articles = get_result_table(
+    get_result_table(
         '''select articles.title, views from articles,
         (select path, count(*) as views from log
         group by path
@@ -23,8 +23,8 @@ def get_pop_articles():
 
 
 def get_pop_authors():
-    authors = get_result_table(
-        '''select name, sum(views) from authors,
+    get_result_table(
+        '''select name, sum(views) as views from authors,
         (select articles.title, articles.author, views
         from articles,
         (select path, count(*) as views from log
@@ -34,11 +34,11 @@ def get_pop_authors():
         order by views desc) as titleviews
         where titleviews.author = authors.id
         group by name
-        order by sum desc;''')
+        order by views desc;''')
 
 
 def get_error_days():
-    days = get_result_table(
+    get_result_table(
         '''select to_char(daily_errors.date, 'FMMonth FMDD, YYYY') as date,
         round(daily_errors.sum / daily_logs.count * 100, 1) as percent
         from (select date(time) as date, count(*)::decimal as sum
@@ -54,17 +54,17 @@ def get_error_days():
 
 
 def get_report():
-    art = get_pop_articles()
-    auth = get_pop_authors()
-    err = get_error_days()
+    articles = get_pop_articles()
+    authors = get_pop_authors()
+    errors = get_error_days()
     print("Top 3 Articles")
-    for ar in art:
-        print("- {} -- {} views".format(ar[0], ar[1]))
+    for title, views in articles:
+        print("- {} -- {} views".format(title, views))
     print("\nMost Popular Authors")
-    for au in auth:
-        print("- {} -- {} views".format(au[0], au[1]))
+    for name, views in authors:
+        print("- {} -- {} views".format(name, aviews))
     print("\nDays With More Than 1% Error Rate")
-    for e in err:
-        print("- {} -- {}% errors".format(e[0], e[1]))
+    for date, percent in errors:
+        print("- {} -- {}% errors".format(date, percent))
 
 get_report()
