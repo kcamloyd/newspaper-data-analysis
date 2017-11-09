@@ -12,7 +12,7 @@ def get_result_table(query):
 
 
 def get_pop_articles():
-    get_result_table(
+    return get_result_table(
         '''select articles.title, views from articles,
         (select path, count(*) as views from log
         group by path
@@ -23,7 +23,7 @@ def get_pop_articles():
 
 
 def get_pop_authors():
-    get_result_table(
+    return get_result_table(
         '''select name, sum(views) as views from authors,
         (select articles.title, articles.author, views
         from articles,
@@ -38,7 +38,7 @@ def get_pop_authors():
 
 
 def get_error_days():
-    get_result_table(
+    return get_result_table(
         '''select to_char(daily_errors.date, 'FMMonth FMDD, YYYY') as date,
         round(daily_errors.sum / daily_logs.count * 100, 1) as percent
         from (select date(time) as date, count(*)::decimal as sum
@@ -62,7 +62,7 @@ def get_report():
         print("- {} -- {} views".format(title, views))
     print("\nMost Popular Authors")
     for name, views in authors:
-        print("- {} -- {} views".format(name, aviews))
+        print("- {} -- {} views".format(name, views))
     print("\nDays With More Than 1% Error Rate")
     for date, percent in errors:
         print("- {} -- {}% errors".format(date, percent))
